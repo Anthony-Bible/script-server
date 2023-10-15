@@ -13,6 +13,7 @@ FROM alpine:3.14
 RUN apk add --no-cache ca-certificates
 
 COPY --from=builder /app/server /server
+COPY --from=builder /app/scripts /scripts
 
 CMD ["/server"]
 
