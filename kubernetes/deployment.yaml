@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: script-server-deployment
+  labels:
+    app: script-server
+spec:
+  selector:
+    matchLabels:
+      app: script-server
+  template:
+    metadata:
+      labels:
+        app: script-server
+    spec:
+      containers:
+      - name: script-server-container
+        image: ghcr.io/anthony-bible/script-server:latest
+        imagePullPolicy: "Always"
