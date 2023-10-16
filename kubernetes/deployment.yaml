@@ -4,6 +4,7 @@ metadata:
   name: runthis-server-deployment
   labels:
     app: runthis-server
+    version: latest
 spec:
   selector:
     matchLabels:
@@ -12,8 +13,11 @@ spec:
     metadata:
       labels:
         app: runthis-server
+        version: latest
     spec:
       containers:
       - name: runthis-server-container
         image: ghcr.io/anthony-bible/script-server:latest
         imagePullPolicy: "Always"
+        ports:
+        - containerPort: 8080
