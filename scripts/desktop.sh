@@ -20,7 +20,9 @@ case "${macos_version%.*}" in
         ;;
     *)
         echo "Unknown macOS version. Can't determine default wallpaper."
-        default_wallpaper=$(curl -s 'https://anthony.bible/image?redirect=true')
+        # Put random image in /tmp/img0.jpg
+        curl -Lo /tmp/img0.jpg "https://anthony.bible/image?redirect=true"
+        default_wallpaper="/tmp/img0.jpg"
         ;;
 esac
 
