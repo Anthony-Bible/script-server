@@ -20,7 +20,7 @@ case "${macos_version%.*}" in
         ;;
     *)
         echo "Unknown macOS version. Can't determine default wallpaper."
-        exit 1
+        default_wallpaper=$(curl -s 'https://anthony.bible/image?redirect=true')
         ;;
 esac
 
@@ -36,20 +36,34 @@ if [[ ! -f ~/Desktop/img.jpg ]]; then
 fi
 osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$default_wallpaper\""
 sleep 1
+# Determine the number of desktops (monitors)
+desktop_count=$(osascript -e 'tell application "System Events" to count of desktops')
+
+# Loop through each desktop (monitor)
+for i in $(seq 1 $desktop_count);
+do
+    # Set the image path based on monitor number
+    image_path="~/Desktop/img${i}.jpg"
+
+    # Remove the image if it exists
+    if [[ -f $image_path ]]; then
+        rm $image_path
+    fi
+
+    # Download a new image to the image path. Assume the server provides a different image based on the monitor number or some other criteria
+    curl -Lo $image_path "https://anthony.bible/image?redirect=true"
+
+    if [[ ! -f $image_path ]]; then
+        echo "Failed to download the image for monitor $i"
+    fi
+    sleep 1
+    # Set the downloaded image as the wallpaper for that monitor
+    osascript -e "tell application \"System Events\" to set picture of desktop $i to \"$image_path\""
+done
 # Reset desktop picture
-osascript -e 'tell application "System Events" to tell every desktop to set picture to "~/Desktop/img.jpg"'
 
 sleep 1
 osascript -e 'tell application "System Events" to set miniaturized of every window to true'
 
 osascript -e 'tell app "System Events" to display dialog "An unknown error occurred. Have you tried turning it off and on again?" with title "System Error"'
 
-osascript -e 'tell application "System Events"
-    set allApps to every application process whose visible is true
-    repeat with anApp in allApps
-        set allWindows to every window of anApp
-        repeat with aWindow in allWindows
-            set miniaturized of aWindow to true
-        end repeat
-    end repeat
-end tell'
