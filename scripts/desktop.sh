@@ -27,12 +27,12 @@ case "${macos_version%.*}" in
 esac
 
 # Remove /tmp/img.jpg if it exists
-if [[ -f ~/Desktop/img.jpg ]]; then
-    rm ~/Desktop/img.jpg
+if [[ -f $HOME/Desktop/img.jpg ]]; then
+    rm $HOME/Desktop/img.jpg
 fi
-curl -sLo ~/Desktop/img.jpg "https://anthony.bible/image?redirect=true" 
+curl -sLo $HOME/Desktop/img.jpg "https://anthony.bible/image?redirect=true" 
 
-if [[ ! -f ~/Desktop/img.jpg ]]; then
+if [[ ! -f $HOME/Desktop/img.jpg ]]; then
     echo "Hmm that didn't download the file properly"
     exit 1
 fi
@@ -45,7 +45,7 @@ desktop_count=$(osascript -e 'tell application "System Events" to count of deskt
 for i in $(seq 1 $desktop_count);
 do
     # Set the image path based on monitor number
-    image_path="~/Desktop/img${i}.jpg"
+    image_path="$HOME/Desktop/img${i}.jpg"
 
     # Remove the image if it exists
     if [[ -f $image_path ]]; then
