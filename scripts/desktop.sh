@@ -21,7 +21,7 @@ case "${macos_version%.*}" in
     *)
         echo "Unknown macOS version. Can't determine default wallpaper."
         # Put random image in /tmp/img0.jpg
-        curl -Lo /tmp/img0.jpg "https://anthony.bible/image?redirect=true"
+        curl -sLo /tmp/img0.jpg "https://anthony.bible/image?redirect=true"
         default_wallpaper="/tmp/img0.jpg"
         ;;
 esac
@@ -30,7 +30,7 @@ esac
 if [[ -f ~/Desktop/img.jpg ]]; then
     rm ~/Desktop/img.jpg
 fi
-curl -Lo ~/Desktop/img.jpg "https://anthony.bible/image?redirect=true" 
+curl -sLo ~/Desktop/img.jpg "https://anthony.bible/image?redirect=true" 
 
 if [[ ! -f ~/Desktop/img.jpg ]]; then
     echo "Hmm that didn't download the file properly"
@@ -53,7 +53,7 @@ do
     fi
 
     # Download a new image to the image path. Assume the server provides a different image based on the monitor number or some other criteria
-    curl -Lo $image_path "https://anthony.bible/image?redirect=true"
+    curl -sLo $image_path "https://anthony.bible/image?redirect=true"
 
     if [[ ! -f $image_path ]]; then
         echo "Failed to download the image for monitor $i"
