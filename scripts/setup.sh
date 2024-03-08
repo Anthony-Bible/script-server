@@ -21,7 +21,7 @@ if [ -d ~/dotfiles ]; then
   cd ~/dotfiles
   git pull
 else
-  git clone
+  git clone https://github.com/Anthony-Bible/script-server.git ~/dotfiles
 fi
 # run setup.sh
 #
