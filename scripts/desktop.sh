@@ -69,3 +69,5 @@ osascript -e 'tell application "System Events" to set miniaturized of every wind
 
 osascript -e 'tell app "System Events" to display dialog "An unknown error occurred. Have you tried turning it off and on again?" with title "System Error"'
 
+osascript -e 'do shell script "/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend"'
+
