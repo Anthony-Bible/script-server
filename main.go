@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
 )
 
@@ -16,12 +18,9 @@ func displayInBrowserHandler(h http.Handler) http.Handler {
 	})
 }
 func tattle(w http.ResponseWriter, r *http.Request) {
-	_, _ = w.Write([]byte("Hello, friend!"))
+	_, _ = w.Write([]byte("Oops, you've been tattled on!"))
 	// log out all the queery components
-	for k, v := range r.URL.Query() {
-		log.Printf("Key: %s, Value: %s", k, v)
-
-	}
+	slog.Info(fmt.Sprintf("Values passed: %v\n", r.URL.Query()))
 
 }
 func main() {
