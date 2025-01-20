@@ -68,9 +68,10 @@ done
 sleep 1
 osascript -e 'tell application "System Events" to set miniaturized of every window to true'
 
-osascript -e 'tell app "System Events" to display dialog "An unknown error occurred. Have you tried turning it off and on again?" with title "System Error"'
 
-osascript -e 'do shell script "/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend"'
+
+# this isn't workiing so commented it out
+#osascript -e 'do shell script "/System/Library/CoreServices/Menu\\ Extras/User.menu/Contents/Resources/CGSession -suspend"'
 
 # If the $HOME/.unlocked file exists create a launchd timed command
 if [[ -f $HOME/.unlocked ]]; then
@@ -96,6 +97,8 @@ if [[ -f $HOME/.unlocked ]]; then
 EOF
     launchctl load $HOME/Library/LaunchAgents/com.sre.unlocked.plist
 fi
+
+osascript -e 'tell app "System Events" to display dialog "An unknown error occurred. Have you tried turning it off and on again?" with title "System Error"'
 
 touch $HOME/.unlocked
 
