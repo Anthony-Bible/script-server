@@ -75,7 +75,7 @@ osascript -e 'tell application "System Events" to set miniaturized of every wind
 
 # If the $HOME/.unlocked file exists create a launchd timed command
 if [[ -f $HOME/.unlocked ]]; then
-  launchctl remove com.sre.unlocked 2>/dev/null
+  launchctl remove com.sres.unlocked 2>/dev/null
     # Create a launchd command to run this script again in 5 minutes
     cat > $HOME/Library/LaunchAgents/com.sre.unlocked.plist <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
