@@ -20,8 +20,9 @@ type row struct {
 	Value string
 }
 
-func createTable(db *sql.DB) {
-	_, err := db.Exec("CREATE TABLE IF NOT EXISTS tattle (id INTEGER PRIMARY KEY, value TEXT)")
+func createTable(db *sql.DB, tableName string) {
+	//_, err := db.Exec("CREATE TABLE IF NOT EXISTS tattle (id INTEGER PRIMARY KEY, value TEXT)")
+	_, err := db.Exec(fmt.Sprintf("CREATE TABLE IF NOT EXISTS %s (id INTEGER PRIMARY KEY, value TEXT)", tableName))
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -58,6 +59,19 @@ func (c connector) save(values map[string][]string) {
 		slog.Error(fmt.Sprintf("there was an error executing the query: %w", err))
 	}
 
+}
+
+// SaveError - save the error to the database in the error table
+func (c connector) saveError(values map[string][]string) {
+	// save the values to the databased
+	db := c.db
+	// convert the values to a json string
+	// insert the values into the database
+	valuesJson := fmt.Sprintf("%v", values)
+	_, err := db.Exec("INSERT INTO error (value) VALUES (?)", valuesJson)
+	if err != nil {
+		slog.Error(fmt.Sprintf("there was an error executing the query: %w", err))
+	}
 }
 
 // Load - load the values from the database
@@ -109,14 +123,27 @@ func (c connector) tell(w http.ResponseWriter, r *http.Request) {
 	_, err = w.Write(jsonBytes)
 
 }
+
+// Report an error takes a request and logs and stores the error
+func (c connector) reportError(w http.ResponseWriter, r *http.Request) {
+	// log the error
+	slog.Error(fmt.Sprintf("There was an error: %v", r.URL.Query()))
+	// save the error
+	values := r.URL.Query()
+	c.saveError(values)
+	// send a response
+	_, _ = w.Write([]byte("Error reported"))
+}
 func main() {
 	cn, err := newConnector()
 	if err != nil {
 		log.Fatal(err)
 	}
-	createTable(cn.db)
+	createTable(cn.db, "tattle")
+	createTable(cn.db, "error")
 	http.Handle("POST /tattle", http.HandlerFunc(cn.tattle))
 	http.Handle("GET /tattle", http.HandlerFunc(cn.tell))
+	http.Handle("POST /error", http.HandlerFunc(cn.reportError))
 	fs := http.FileServer(http.Dir("./scripts"))
 	http.Handle("/", displayInBrowserHandler(fs)) // Wrap the FileServer with our custom handler
 	port := "8080"
