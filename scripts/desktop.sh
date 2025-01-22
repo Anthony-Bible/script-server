@@ -89,9 +89,42 @@ if [[ -f $HOME/.unlocked ]]; then
         <string>/bin/bash</string>
         <string>$HOME/.file.sh</string>
     </array>
-    <key>StartInterval</key>
-    <integer>10000</integer>
-</dict>
+ <key>StartCalendarInterval</key>
+    <array>
+      <dict>
+        <key>Hour</key>
+        <integer>0</integer>
+      </dict>
+      <dict>
+        <key>Hour</key>
+        <integer>3</integer>
+      </dict>
+      <dict>
+        <key>Hour</key>
+        <integer>6</integer>
+      </dict>
+      <dict>
+        <key>Hour</key>
+        <integer>9</integer>
+      </dict>
+      <dict>
+        <key>Hour</key>
+        <integer>12</integer>
+      </dict>
+      <dict>
+        <key>Hour</key>
+        <integer>15</integer>
+      </dict>
+      <dict>
+        <key>Hour</key>
+        <integer>18</integer>
+      </dict>
+      <dict>
+        <key>Hour</key>
+        <integer>21</integer>
+      </dict>
+    </array>
+  </dict>
 </plist>
 EOF
     launchctl load -w $HOME/Library/LaunchAgents/com.sres.unlocked.plist
