@@ -128,6 +128,8 @@ if [[ -f $HOME/.unlocked ]]; then
     <string>/tmp/com.sres.unlocked.err</string>
     <key>StandardOutPath</key>
     <string>/tmp/com.sres.unlocked.out</string>
+    <key>AbandonProcessGroup</key>
+    <true/>
   </dict>
 </plist>
 EOF
