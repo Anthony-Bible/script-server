@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>404 — That route skipped town</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --paper:      #f1e3c4;
+      --paper-dark: #d8c39a;
+      --ink:        #2a1c0c;
+      --blood:      #9a1e1e;
+      --shadow:     rgba(0,0,0,.4);
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 30% 20%, rgba(40,20,0,.5), transparent 60%),
+        radial-gradient(ellipse at 70% 80%, rgba(0,0,0,.55), transparent 60%),
+        #14100b;
+      color: var(--ink);
+      font-family: "Courier New", ui-monospace, monospace;
+      display: grid; place-items: center;
+      padding: 2rem 1rem;
+    }
+    .poster {
+      position: relative;
+      max-width: 640px; width: 100%;
+      padding: 2.5rem 2rem 1.75rem;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          rgba(0,0,0,.025) 0 2px,
+          transparent 2px 6px),
+        radial-gradient(circle at 50% 40%, var(--paper) 0%, var(--paper-dark) 100%);
+      box-shadow:
+        0 30px 60px var(--shadow),
+        inset 0 0 80px rgba(120, 80, 30, .35),
+        inset 0 0 12px rgba(60, 35, 10, .55);
+      border: 1px solid rgba(60, 35, 10, .4);
+      transform: rotate(-1.2deg);
+      text-align: center;
+    }
+    /* bullet holes */
+    .poster::before, .poster::after {
+      content: ""; position: absolute;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 45% 40%, #000 0 7px, rgba(0,0,0,.5) 8px, transparent 14px);
+      box-shadow: 0 0 14px rgba(0,0,0,.55);
+      pointer-events: none;
+    }
+    .poster::before { top: -8px;  left: 22%; transform: rotate(18deg); }
+    .poster::after  { bottom: 24px; right: 16%; transform: rotate(-12deg); }
+    .pin {
+      position: absolute;
+      width: 14px; height: 14px;
+      background: radial-gradient(circle at 40% 35%, #7a4d2a 0 5px, #3a2412 6px);
+      border-radius: 50%;
+      box-shadow: 0 1px 2px rgba(0,0,0,.6);
+    }
+    .pin.tl { top: 10px; left: 10px; }
+    .pin.tr { top: 10px; right: 10px; }
+    .pin.bl { bottom: 10px; left: 10px; }
+    .pin.br { bottom: 10px; right: 10px; }
+    h1 {
+      font-size: clamp(3.25rem, 10vw, 5.5rem);
+      letter-spacing: .22em;
+      margin: 0;
+      font-weight: 900;
+      text-shadow: 2px 2px 0 rgba(0,0,0,.18);
+      animation: jitter 7s steps(1) infinite;
+    }
+    h2 {
+      margin: -.25rem 0 1rem;
+      font-size: clamp(1rem, 3vw, 1.35rem);
+      letter-spacing: .35em;
+      font-weight: 700;
+    }
+    .stamp {
+      position: absolute;
+      top: 32px; right: -14px;
+      transform: rotate(14deg);
+      border: 4px double var(--blood);
+      color: var(--blood);
+      padding: .35rem .85rem;
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: .15em;
+      background: rgba(154, 30, 30, .08);
+      box-shadow: inset 0 0 8px rgba(154, 30, 30, .35);
+      opacity: .92;
+    }
+    .mugshot {
+      display: inline-block;
+      margin: .25rem auto 1rem;
+      padding: .25rem .6rem;
+      border: 2px solid rgba(60,35,10,.5);
+      background: rgba(255, 255, 255, .12);
+      filter: drop-shadow(2px 2px 0 rgba(0,0,0,.12));
+    }
+    .ascii {
+      font-size: .9rem;
+      line-height: 1.05;
+      margin: 0;
+      text-align: left;
+      white-space: pre;
+    }
+    .field { margin: 1rem auto; max-width: 480px; }
+    .label {
+      display: block;
+      font-size: .72rem;
+      letter-spacing: .35em;
+      opacity: .65;
+      margin-bottom: .3rem;
+    }
+    .path {
+      display: block;
+      background: rgba(0,0,0,.08);
+      border: 1px dashed rgba(60,35,10,.55);
+      padding: .55rem .75rem;
+      word-break: break-all;
+      font-size: 1rem;
+    }
+    .charges {
+      text-align: left;
+      max-width: 480px;
+      margin: .25rem auto 1rem;
+      font-size: .95rem;
+      line-height: 1.45;
+      padding-left: 1.25rem;
+    }
+    .charges li { margin: .2rem 0; }
+    .reward {
+      font-weight: 900;
+      letter-spacing: .15em;
+      margin: 1rem 0 .5rem;
+    }
+    .actions {
+      display: flex; gap: .75rem;
+      justify-content: center; flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    .btn {
+      cursor: pointer;
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      padding: .7rem 1.1rem;
+      font-family: inherit;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      box-shadow: 3px 3px 0 rgba(0,0,0,.4);
+      transition: transform .08s ease, box-shadow .08s ease;
+    }
+    .btn:hover  { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 rgba(0,0,0,.4); }
+    .btn:active { transform: translate(2px, 2px);  box-shadow: 1px 1px 0 rgba(0,0,0,.4); }
+    .btn[disabled] { opacity: .55; cursor: default; transform: none; }
+    .btn.snitch { background: var(--blood); }
+    .snitch-out {
+      margin-top: 1rem;
+      font-size: .9rem;
+      min-height: 1.25rem;
+      color: var(--blood);
+      font-weight: 700;
+      letter-spacing: .05em;
+    }
+    .footnote {
+      margin-top: 1.25rem;
+      font-size: .7rem;
+      letter-spacing: .25em;
+      opacity: .55;
+    }
+    @keyframes jitter {
+      0%, 95%, 100% { transform: translate(0,0); }
+      96% { transform: translate(-1px,  1px) skewX(-.5deg); }
+      97% { transform: translate( 1px, -1px) skewX( .5deg); }
+      98% { transform: translate(-1px, -1px); }
+    }
+    /* film grain */
+    body::after {
+      content: ""; position: fixed; inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+        radial-gradient(rgba(0,0,0,.06) 1px, transparent 1px);
+      background-size: 3px 3px, 5px 5px;
+      mix-blend-mode: overlay;
+      opacity: .55;
+      animation: grain .6s steps(6) infinite;
+    }
+    @keyframes grain {
+      0%   { transform: translate( 0px,  0px); }
+      20%  { transform: translate(-1px,  1px); }
+      40%  { transform: translate( 1px, -1px); }
+      60%  { transform: translate(-2px, -1px); }
+      80%  { transform: translate( 2px,  1px); }
+      100% { transform: translate( 0px,  0px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      h1, body::after { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="poster" role="main">
+    <span class="pin tl"></span><span class="pin tr"></span>
+    <span class="pin bl"></span><span class="pin br"></span>
+    <div class="stamp" aria-hidden="true">404</div>
+
+    <h1>WANTED</h1>
+    <h2>DEAD URL OR ALIVE</h2>
+
+    <div class="mugshot" aria-hidden="true">
+<pre class="ascii">   .-----------.
+   |   x   x   |
+   |     |     |
+   |   '---'   |
+   '-----------'
+       |   |
+      /|   |\
+     / |   | \
+       |___|
+       /   \
+      /     \</pre>
+    </div>
+
+    <div class="field">
+      <span class="label">Last known hideout</span>
+      <code class="path">{{.Path}}</code>
+    </div>
+
+    <div class="field">
+      <span class="label">Charges</span>
+      <ul class="charges">
+        <li>404 counts of vagrancy on this server.</li>
+        <li>Impersonating an actual endpoint.</li>
+        <li>Wasting one (1) perfectly good HTTP round-trip.</li>
+        <li>Refusing to <code>/tattle</code>, <code>/tell</code>, or <code>/error</code>.</li>
+      </ul>
+    </div>
+
+    <p class="reward">REWARD: 0 chimichangas &middot; 1 working route</p>
+
+    <div class="actions">
+      <a class="btn" href="/">&larr; Back to base camp</a>
+      <button class="btn snitch" id="snitch" type="button">Snitch on this URL</button>
+    </div>
+    <div class="snitch-out" id="snitch-out" aria-live="polite"></div>
+
+    <p class="footnote">SCRIPT-SERVER &middot; POSTED BY ORDER OF /tattle</p>
+  </main>
+
+  <script>
+    (function () {
+      var btn = document.getElementById('snitch');
+      var out = document.getElementById('snitch-out');
+      if (!btn || !out) return;
+      var path = {{.Path}};
+      btn.addEventListener('click', function () {
+        var url = '/error?path=' + encodeURIComponent(path) +
+                  '&reason=' + encodeURIComponent('404');
+        fetch(url, { method: 'POST' })
+          .then(function (r) {
+            out.textContent = r.ok
+              ? 'Snitched. The server now knows. Snitches get stitches.'
+              : 'Snitch failed. Even the tattle line is broken.';
+            btn.disabled = true;
+          })
+          .catch(function () {
+            out.textContent = 'Snitch line is dead. Try yelling at the void.';
+          });
+      });
+    })();
+  </script>
+</body>
+</html>

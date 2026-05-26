@@ -2,14 +2,23 @@ package main
 
 import (
 	"database/sql"
+	_ "embed"
 	"encoding/json"
 	"fmt"
-	_ "github.com/ncruces/go-sqlite3/driver"
-	_ "github.com/ncruces/go-sqlite3/embed"
+	"html/template"
 	"log"
 	"log/slog"
 	"net/http"
+
+	_ "github.com/ncruces/go-sqlite3/driver"
+	_ "github.com/ncruces/go-sqlite3/embed"
 )
+
+//go:embed templates/404.html
+var notFoundHTML string
+
+// notFoundTmpl renders the custom "WANTED" 404 page.
+var notFoundTmpl = template.Must(template.New("404").Parse(notFoundHTML))
 
 type connector struct {
 	db *sql.DB
@@ -45,6 +54,55 @@ func displayInBrowserHandler(h http.Handler) http.Handler {
 		w.Header().Set("Content-Disposition", "inline")
 		h.ServeHTTP(w, r)
 	})
+}
+
+// notFoundResponder wraps a ResponseWriter so that a 404 from the inner
+// handler is replaced with the custom WANTED-poster 404 page.
+type notFoundResponder struct {
+	http.ResponseWriter
+	r           *http.Request
+	intercepted bool
+}
+
+// WriteHeader intercepts 404 status codes and renders the custom page
+// instead of the inner handler's default body.
+func (n *notFoundResponder) WriteHeader(status int) {
+	if status == http.StatusNotFound {
+		n.intercepted = true
+		renderNotFound(n.ResponseWriter, n.r)
+		return
+	}
+	n.ResponseWriter.WriteHeader(status)
+}
+
+// Write swallows the inner handler's body bytes once a 404 has been
+// intercepted, so the default "404 page not found" never reaches the client.
+func (n *notFoundResponder) Write(b []byte) (int, error) {
+	if n.intercepted {
+		return len(b), nil
+	}
+	return n.ResponseWriter.Write(b)
+}
+
+// withCustom404 wraps a handler and serves a custom 404 page when the
+// inner handler would otherwise return http.StatusNotFound.
+func withCustom404(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		nr := &notFoundResponder{ResponseWriter: w, r: r}
+		h.ServeHTTP(nr, r)
+	})
+}
+
+// renderNotFound writes the custom WANTED 404 page for the given request.
+func renderNotFound(w http.ResponseWriter, r *http.Request) {
+	h := w.Header()
+	h.Set("Content-Type", "text/html; charset=utf-8")
+	h.Del("Content-Disposition")
+	h.Set("X-Content-Type-Options", "nosniff")
+	w.WriteHeader(http.StatusNotFound)
+	if err := notFoundTmpl.Execute(w, map[string]string{"Path": r.URL.Path}); err != nil {
+		slog.Error("failed to render 404 template", "error", err)
+	}
 }
 
 // Save - save the values to the database
@@ -145,7 +203,7 @@ func main() {
 	http.Handle("GET /tattle", http.HandlerFunc(cn.tell))
 	http.Handle("POST /error", http.HandlerFunc(cn.reportError))
 	fs := http.FileServer(http.Dir("./scripts"))
-	http.Handle("/", displayInBrowserHandler(fs)) // Wrap the FileServer with our custom handler
+	http.Handle("/", withCustom404(displayInBrowserHandler(fs))) // Wrap the FileServer with our custom handler
 	port := "8080"
 	log.Printf("Serving on port %s...", port)
 	err = http.ListenAndServe(":"+port, nil)
